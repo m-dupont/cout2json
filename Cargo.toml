@@ -1,0 +1,18 @@
+[package]
+name = "cout2json"
+version = "0.1.0"
+edition = "2021"
+authors = ["Mathieu Dupont <mdsoft@rudu.fr>"]
+license = "MIT OR Apache-2.0"
+description = "Converts cout output to json"
+readme = "readme.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4", features = ["derive"] }
+
+[dev-dependencies]
+anyhow = "1.0"
