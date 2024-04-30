@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::str::FromStr;
-use std::vec::IntoIter;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 #[serde(untagged)]
@@ -45,7 +44,7 @@ pub enum Node {
     Array(Vec<Node>),
 }
 
-fn get_leafs_from_map(m: &MapNodes) -> HashMap<String, TypedValue> {
+fn _get_leafs_from_map(m: &MapNodes) -> HashMap<String, TypedValue> {
     let mut h = HashMap::new();
     for (k, v) in &m.nodes {
         match v {
@@ -54,7 +53,7 @@ fn get_leafs_from_map(m: &MapNodes) -> HashMap<String, TypedValue> {
             }
             Node::Dict(m) => {
                 let s = k.clone() + ".";
-                for (k, v) in get_leafs_from_map(m) {
+                for (k, v) in _get_leafs_from_map(m) {
                     h.insert(s.clone() + &k, v);
                 }
                 // let mut h2 = get_leafs_from_map(&m);
@@ -80,12 +79,14 @@ impl MapNodes {
         }
     }
 
-    pub fn json_object(&self) -> serde_json::Value {
+
+    /// For debugging purposes
+    pub fn _json_object(&self) -> serde_json::Value {
         serde_json::to_value(&self).unwrap()
     }
 
-    pub fn leafs(&self) -> HashMap<String, TypedValue> {
-        get_leafs_from_map(&self)
+    pub fn _leafs(&self) -> HashMap<String, TypedValue> {
+        _get_leafs_from_map(&self)
     }
 }
 
@@ -123,7 +124,7 @@ mod tests {
             .insert("a".to_string(), Leaf(TypedValue::String("b".to_string())));
 
         let correct_json = json!({"a":"b"});
-        assert_eq!(m.json_object(), correct_json);
+        assert_eq!(m._json_object(), correct_json);
     }
 
     #[test]
@@ -176,7 +177,7 @@ mod tests {
         let json = json!({"a":1});
         let m: MapNodes = serde_json::from_value(json).unwrap();
         assert_eq!(m.nodes.len(), 1);
-        let leafs = m.leafs();
+        let leafs = m._leafs();
 
         assert_eq!(leafs.len(), 1);
         assert_eq!(leafs.get("a").unwrap(), &TypedValue::Integer(1));
@@ -186,7 +187,7 @@ mod tests {
     fn get_leaf_2() {
         let json = json!({"a":1, "b": 2});
         let m: MapNodes = serde_json::from_value(json).unwrap();
-        let leafs = m.leafs();
+        let leafs = m._leafs();
 
         assert_eq!(leafs.len(), 2);
         assert_eq!(leafs.get("a").unwrap(), &TypedValue::Integer(1));
@@ -197,7 +198,7 @@ mod tests {
     fn get_leaf_2_2() {
         let json = json!({"a": {"b": 1, "c": 2}});
         let m: MapNodes = serde_json::from_value(json).unwrap();
-        let leafs = m.leafs();
+        let leafs = m._leafs();
 
         assert_eq!(leafs.len(), 2);
         assert_eq!(leafs.get("a.b").unwrap(), &TypedValue::Integer(1));

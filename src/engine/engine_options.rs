@@ -35,14 +35,12 @@ pub enum HowToDictInArray {
 pub struct EngineOptions {
     pub verbosity: u8,
     pub how_to_dict_in_array: HowToDictInArray,
-    pub error_as_warning: bool,
 }
 
 impl EngineOptions {
     pub fn new() -> Self {
         Self {
             verbosity: 0,
-            error_as_warning: false,
             ..Default::default()
         }
     }
@@ -52,10 +50,7 @@ impl EngineOptions {
         self
     }
 
-    pub fn with_error_as_warning(mut self, v: bool) -> Self {
-        self.error_as_warning = v;
-        self
-    }
+
 
     pub fn with_how_to_dict_in_array(mut self, h: HowToDictInArray) -> Self {
         self.how_to_dict_in_array = h;

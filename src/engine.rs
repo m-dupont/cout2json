@@ -1,10 +1,7 @@
 use crate::jsonmodels::{MapNodes, Node};
 use std::collections::hash_map::Entry;
-use std::collections::HashMap;
-// use std::collections::HashMap;
 pub use crate::engine::engine_options::EngineOptions;
 use std::process::exit;
-use std::str::FromStr;
 
 pub(crate) mod engine_options;
 pub mod errors;
@@ -164,7 +161,8 @@ impl Engine {
         Ok(())
     }
 
-    pub fn get_json_object(&self) -> serde_json::Value {
+    /// Used for testing
+    pub fn _get_json_object(&self) -> serde_json::Value {
         serde_json::to_value(&self.values).unwrap()
     }
 
@@ -200,7 +198,7 @@ mod tests {
     fn test_1_key_str() -> anyhow::Result<()> {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
         engine.add_line(";a:value")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":"value"});
         assert_eq!(json, correct_json);
         Ok(())
@@ -210,7 +208,7 @@ mod tests {
     fn test_1_key() -> anyhow::Result<()> {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
         engine.add_line(";a:1")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":1});
         assert_eq!(json, correct_json);
         Ok(())
@@ -221,7 +219,7 @@ mod tests {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
         engine.add_line(";a:1")?;
         engine.add_line(";b:2")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":1,"b":2});
         assert_eq!(json, correct_json);
         Ok(())
@@ -231,7 +229,7 @@ mod tests {
     fn test_1_1_key() -> anyhow::Result<()> {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
         engine.add_line(";a.b:1")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":{"b":1}});
         assert_eq!(json, correct_json);
         Ok(())
@@ -241,7 +239,7 @@ mod tests {
     fn test_1_1_1_key() -> anyhow::Result<()> {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
         engine.add_line(";a.b.c:1")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":{"b":{"c":1}}});
         assert_eq!(json, correct_json);
         Ok(())
@@ -251,7 +249,7 @@ mod tests {
     fn test_1_1_1_key_bis() -> anyhow::Result<()> {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
         engine.add_line(";a.b.c:1")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":{"b":{"c":1}}});
         assert_eq!(json, correct_json);
         Ok(())
@@ -262,12 +260,12 @@ mod tests {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
 
         engine.add_line(";a:1")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({"a":1});
         assert_eq!(json, correct_json);
 
         engine.add_line(";a.c:2")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a":{"value": 1, "c": 2}     });
         assert_eq!(json, correct_json);
@@ -279,13 +277,13 @@ mod tests {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
 
         engine.add_line(";a.c:2")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a":{"c": 2}     });
         assert_eq!(json, correct_json);
 
         engine.add_line(";a.b:3")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a":{"c": 2, "b": 3}     });
         assert_eq!(json, correct_json);
@@ -297,13 +295,13 @@ mod tests {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
 
         engine.add_line(";a:2")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a":2     });
         assert_eq!(json, correct_json);
 
         engine.add_line(";a:3")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": [2, 3]     });
         assert_eq!(json, correct_json);
@@ -316,12 +314,12 @@ mod tests {
 
         engine.add_line(";a:2")?;
         engine.add_line(";a:3")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": [2, 3]     });
         assert_eq!(json, correct_json);
         engine.add_line(";a:4")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": [2, 3, 4]     });
         assert_eq!(json, correct_json);
@@ -333,13 +331,13 @@ mod tests {
         let mut engine = Engine::new(EngineOptions::new().with_verbosity(10));
 
         engine.add_line(";a.b:2")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": {"b": 2}     });
         assert_eq!(json, correct_json);
 
         engine.add_line(";a.c:c:3")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": {"b": 2, "c": "c:3"}     });
         assert_eq!(json, correct_json);
@@ -353,7 +351,7 @@ mod tests {
         engine.add_line(";a:1")?;
         engine.add_line(";a:2")?;
         engine.add_line(";a:3")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": [1,2,3]     });
         assert_eq!(json, correct_json);
@@ -361,7 +359,7 @@ mod tests {
         let e = engine.add_line(";a.b:4");
         assert!(e.is_err());
         matches!(e, Err(Error::HowToDictInArray));
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!(
             {"a":  [1, 2, 3]}
         );
@@ -379,21 +377,22 @@ mod tests {
         engine.add_line(";a:1")?;
         engine.add_line(";a:2")?;
         engine.add_line(";a:3")?;
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!({
             "a": [1,2,3]     });
         assert_eq!(json, correct_json);
 
         let e = engine.add_line(";a.b:4");
         assert!(e.is_ok());
-        let json = engine.get_json_object();
+        let json = engine._get_json_object();
         let correct_json = json!(
             {"a":  [1, 2, 3, {"b" : 4}]}
         );
         assert_eq!(json, correct_json);
 
         let e = engine.add_line(";a.b:5");
-        let json = engine.get_json_object();
+        assert!(e.is_ok());
+        let json = engine._get_json_object();
         let correct_json = json!(
             {"a":  [1, 2, 3, {"b" : 4}, {"b" : 5}]}
         );
