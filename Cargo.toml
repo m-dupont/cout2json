@@ -6,6 +6,7 @@ authors = ["Mathieu Dupont <mdsoft@rudu.fr>"]
 license = "MIT OR Apache-2.0"
 description = "Converts cout output to json"
 readme = "readme.md"
+repository = "https://github.com/m-dupont/cout2json"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
