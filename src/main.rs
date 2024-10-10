@@ -22,6 +22,10 @@ struct Cli {
     /// print original cout to stderr
     #[arg(short, long)]
     tee: bool,
+
+    /// delimiter
+    #[arg(long, default_value = ";")]
+    delimiter: String,
 }
 
 fn main() {
@@ -33,7 +37,9 @@ fn main() {
     // exit(0);
 
     let engine_options = EngineOptions::new();
-    let mut engine_options = engine_options.with_verbosity(cli.verbose);
+    let engine_options = engine_options.with_verbosity(cli.verbose);
+    let mut engine_options = engine_options.with_key_delimiter(cli.delimiter);
+
 
     if let Some(how_to_dict_in_array) = cli.how_to_dict_in_array {
         engine_options = engine_options.with_how_to_dict_in_array(how_to_dict_in_array)

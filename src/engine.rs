@@ -135,7 +135,7 @@ impl Engine {
 
         if line.starts_with(";") {
             let line = &line[1..];
-            let parts = line.split_once(":");
+            let parts = line.split_once(&self.options.key_to_value_delimiter);
 
             if let Some((dotted_key, value)) = parts {
                 let value = value.trim();

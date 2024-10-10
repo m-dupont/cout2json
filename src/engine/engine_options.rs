@@ -31,17 +31,19 @@ pub enum HowToDictInArray {
     MakeArrayAsDictValue,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct EngineOptions {
     pub verbosity: u8,
     pub how_to_dict_in_array: HowToDictInArray,
+    pub key_to_value_delimiter: String
 }
 
 impl EngineOptions {
     pub fn new() -> Self {
         Self {
             verbosity: 0,
-            ..Default::default()
+            key_to_value_delimiter: ":".to_string(),
+            how_to_dict_in_array: HowToDictInArray::default()
         }
     }
 
@@ -54,6 +56,11 @@ impl EngineOptions {
 
     pub fn with_how_to_dict_in_array(mut self, h: HowToDictInArray) -> Self {
         self.how_to_dict_in_array = h;
+        self
+    }
+
+    pub fn with_key_delimiter(mut self, k: String) -> Self {
+        self.key_to_value_delimiter = k;
         self
     }
 }
